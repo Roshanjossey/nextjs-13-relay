@@ -1,7 +1,24 @@
 import Image from 'next/image'
+import React, { Suspense } from 'react'
+import { graphql, usePreloadedQuery, RelayEnvironmentProvider, loadQuery } from 'react-relay'
+import RelayEnvironment from '../lib/RelayEnvironment'
 import styles from './page.module.css'
 
-export default function Home() {
+// Define a query
+const RepositoryNameQuery = graphql`
+  query pageRepositoryNameQuery {
+    repository(owner: "facebook", name: "relay") {
+      name
+    }
+  }
+`;
+
+const preloadedQuery = loadQuery(RelayEnvironment, RepositoryNameQuery, {
+  /* query variables */
+});
+
+function Home(props: any) {
+  const data = usePreloadedQuery(RepositoryNameQuery, props.preloadedQuery);
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -9,35 +26,8 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js 13!</a>
         </h1>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
+        <p>{data.repository.name}</p>
 
-        <div className={styles.grid}>
-          <a href="https://beta.nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js 13</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Explore the Next.js 13 playground.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates/next.js/app-directory?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
       </main>
 
       <footer className={styles.footer}>
@@ -55,3 +45,20 @@ export default function Home() {
     </div>
   )
 }
+
+// The above component needs to know how to access the Relay environment, and we
+// need to specify a fallback in case it suspends:
+// - <RelayEnvironmentProvider> tells child components how to talk to the current
+//   Relay Environment instance
+// - <Suspense> specifies a fallback in case a child suspends.
+function App(props: any) {
+  return (
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <Suspense fallback={'Loading...'}>
+        <Home preloadedQuery={preloadedQuery} />
+      </Suspense>
+    </RelayEnvironmentProvider>
+  );
+}
+
+export default App;
