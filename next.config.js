@@ -1,16 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
+  reactStrictMode: true,
+  swcMinify: true,
   compiler: {
     relay: {
-      // This should match relay.config.js
-      src: './',
-      artifactDirectory: './__generated__',
-      language: 'typescript',
+      src: "./",
+      language: "typescript",
+      artifactDirectory: "__generated__",
     },
   },
-}
+  experimental: { appDir: true },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
