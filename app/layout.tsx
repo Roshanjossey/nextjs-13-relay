@@ -7,7 +7,7 @@ export default function RootLayout({
   return (
     <html>
       <head>
-        <title>Github Issues: Relay</title>
+        <title>Github Issues: first-contributions</title>
       </head>
       <body>{children}</body>
     </html>
