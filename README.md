@@ -6,7 +6,7 @@
 ### 1. Create Next.js project
 
 ```bash
-npx create-next-app@latest --experimental-app next-13-relay
+npx create-next-app@latest next-13-relay
 ```
 
 > Here, `next-13-relay` is the name of the app you're creating
