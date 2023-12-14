@@ -39,24 +39,15 @@ relay.config.json
 ```json
 {
   "root": ".",
+  "excludes": ["**/node_modules/**"],
   "sources": {
-    "src": "my_app",
-    "app": "my_app"
+      "": "myProject"
   },
   "projects": {
-    "my_app": {
-      "language": "typescript",
-      "schema": "schema.graphql",
-      "output": "__generated__",
-      "useImportTypeSyntax": true,
-      "featureFlags": {
-        "relay_resolver_model_syntax_enabled": true,
-        "use_named_imports_for_relay_resolvers": true,
-        "enable_relay_resolver_transform": true,
-        "relay_resolver_enable_terse_syntax": true
-      },
-      "eagerEsModules": true
-    }
+      "myProject": {
+          "schema": "schema.graphql",
+          "language": "typescript"
+      }
   }
 }
 ```
@@ -68,19 +59,18 @@ next.config.js
 ```js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-  compiler: {
-    relay: {
-      src: "./",
-      language: "typescript",
-      artifactDirectory: "__generated__",
+    reactStrictMode: true,
+    swcMinify: true,
+    compiler: {
+      relay: {
+        src: "./",
+        language: "typescript",
+        artifactDirectory: "app/__generated__",
+      },
     },
-  },
-  experimental: { appDir: true },
-};
-
-module.exports = nextConfig;
+  };
+  
+  module.exports = nextConfig;
 ```
 
 ### 2.4 Get schema.graphql
@@ -318,8 +308,8 @@ Change `app/page.tsx` as follows:
 import loadSerializableQuery from "../src/relay/loadSerializableQuery";
 import MainViewQueryNode, {
   MainViewQuery,
-} from "../__generated__/MainViewQuery.graphql";
-import MainViewClientComponent from "./MainViewClientComponent";
+} from "./__generated__/MainViewQuery.graphql";
+import MainViewClientComponent from "./MainView";
 
 const Page = async () => {
   const preloadedQuery = await loadSerializableQuery<
@@ -352,7 +342,7 @@ import { Suspense } from "react";
 import { SerializablePreloadedQuery } from "../src/relay/loadSerializableQuery";
 import MainViewQueryNode, {
   MainViewQuery,
-} from "../__generated__/MainViewQuery.graphql";
+} from "./__generated__/MainViewQuery.graphql";
 import { getCurrentEnvironment } from "../src/relay/environment";
 import { RelayEnvironmentProvider, graphql, PreloadedQuery, usePreloadedQuery } from "react-relay";
 import useSerializablePreloadedQuery from "../src/relay/useSerializablePreloadedQuery";

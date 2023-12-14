@@ -1,8 +1,8 @@
-import loadSerializableQuery from "src/relay/loadSerializableQuery";
+import loadSerializableQuery from "../src/relay/loadSerializableQuery";
 import MainViewQueryNode, {
   MainViewQuery,
-} from "__generated__/MainViewQuery.graphql";
-import MainViewClientComponent from "./MainViewClientComponent";
+} from "./__generated__/MainViewQuery.graphql";
+import MainViewClientComponent from "./MainView";
 
 const Page = async () => {
   const preloadedQuery = await loadSerializableQuery<
